@@ -32,7 +32,20 @@ services:
     volumes:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+  db-pg:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=default_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - db-pg:/var/lib/postgresql/data
 volumes:
   my-db: ~
   cache:
+    driver: local
+  db-pg:
     driver: local
