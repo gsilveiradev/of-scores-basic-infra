@@ -1,6 +1,7 @@
 version: '3.4'
 
 services:
+  # MySQL database
   db:
     image: mysql:8.0
     restart: always
@@ -15,14 +16,18 @@ services:
       - '3306'
     volumes:
       - my-db:/var/lib/mysql
-  cache:
+
+  # Redis single mode
+  redis-single:
     image: redis:3-alpine
     restart: always
     ports:
       - '6379:6379'
     command: redis-server --save 20 1 --loglevel warning
     volumes:
-      - cache:/data
+      - redis-single:/data
+
+  # RabbitMQ
   rabbitmq:
     image: rabbitmq:3-management
     container_name: 'rabbitmq'
@@ -32,6 +37,8 @@ services:
     volumes:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+
+  # Postgres Database
   db-pg:
     image: postgres:14.1-alpine
     restart: always
@@ -45,7 +52,7 @@ services:
       - db-pg:/var/lib/postgresql/data
 volumes:
   my-db: ~
-  cache:
+  redis-single:
     driver: local
   db-pg:
     driver: local
